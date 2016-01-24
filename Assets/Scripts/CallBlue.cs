@@ -3,10 +3,12 @@ using System.Collections;
 
 //the following colors the led in virtual world with a light component i.e (REDLED.enabled), sets a flag i.e. REDLEDSTATUS,
 //and calls a function in communicate to serially send the updated information to the real world blinky box
+//comment to test changes in Github
 
 public class CallBlue : MonoBehaviour {
 	private Light BLUELIGHT;
 	public static bool BLUELEDSTATUS=false;
+
 
 	void Start () {
 		BLUELIGHT = GetComponent <Light>();
