@@ -7,7 +7,7 @@ using System.Collections;
 
 public class CallGreen : MonoBehaviour {
 
-	private Light GREENLIGHT;
+    public static Light GREENLIGHT;
 
 	public static bool GREENLEDSTATUS=false;
 	void Start () {
@@ -18,12 +18,12 @@ public class CallGreen : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void Update ()
+    {
+
 	}
 
 	 void OnMouseDown() {
-	 	//print("Clicked");
 		GREENLEDSTATUS=!GREENLEDSTATUS;
 
 		if (GREENLEDSTATUS) {
@@ -31,7 +31,9 @@ public class CallGreen : MonoBehaviour {
 			GREENLIGHT.enabled = true;
 		} else {gameObject.GetComponent<Renderer> ().material.color = Color.white;
 		  		GREENLIGHT.enabled = false;}
-
-		Communicate.sendGreen(GREENLEDSTATUS);
+        if (Communicate.sp.IsOpen) //make sure the port is open before we send
+        {
+            Communicate.sendGreen(GREENLEDSTATUS);
+        }
 	 }
 }

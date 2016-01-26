@@ -39,3 +39,24 @@ C:\Users\Public\Documents\Unity Projects\SerialTests\SerialTest1\Temp\bin\Debug\
 C:\Users\Public\Documents\Unity Projects\SerialTests\SerialTest1\Temp\bin\Debug\UnityEngine.Networking.xml
 C:\Users\Public\Documents\Unity Projects\SerialTests\SerialTest1\obj\Debug\Assembly-CSharp.dll
 C:\Users\Public\Documents\Unity Projects\SerialTests\SerialTest1\obj\Debug\Assembly-CSharp.pdb
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\Assembly-CSharp.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\Assembly-CSharp.pdb
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\UnityEditor.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\UnityEngine.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\UnityEngine.Networking.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\UnityEngine.UI.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\Mono.Cecil.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\Unity.SerializationLogic.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\Unity.DataContract.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\ICSharpCode.NRefactory.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\Unity.UNetWeaver.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\Unity.CecilTools.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\Mono.Cecil.Pdb.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\Mono.Cecil.Mdb.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\UnityEngine.xml
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\UnityEditor.xml
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\UnityEngine.UI.xml
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\UnityEngine.Networking.xml
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\obj\Debug\Assembly-CSharp.dll
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\obj\Debug\Assembly-CSharp.pdb
+C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache

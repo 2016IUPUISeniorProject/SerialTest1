@@ -50,7 +50,10 @@ void Update () {
 			PREVIOUSZVECTOR = NEWZVECTOR;
 			PREVIOUSANGLE = angle;
 			LIGHTRINGLED(ENCODERLEDSTATUS);
-			Communicate.sendKnob(ENCODERLEDSTATUS);
+            if (Communicate.sp.IsOpen) //make sure the port is open before we send
+            {
+                Communicate.sendKnob(ENCODERLEDSTATUS);
+            }
 
 
 		}

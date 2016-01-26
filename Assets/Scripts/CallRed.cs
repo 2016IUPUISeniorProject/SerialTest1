@@ -8,7 +8,7 @@ using System.Collections;
 
 public class CallRed : MonoBehaviour {
 
-	private Light REDLIGHT;
+    public static Light REDLIGHT;
 	public static bool REDLEDSTATUS=false;
 	void Start () {
 		REDLIGHT = GetComponent <Light>();
@@ -17,8 +17,9 @@ public class CallRed : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void Update () 
+    {
+        
 	}
 
 	void OnMouseDown() {
@@ -28,8 +29,10 @@ public class CallRed : MonoBehaviour {
 			REDLIGHT.enabled = true;
 		} else {gameObject.GetComponent<Renderer> ().material.color = Color.white;
 			REDLIGHT.enabled = false;}
-
-		Communicate.sendRed(REDLEDSTATUS);
+        if (Communicate.sp.IsOpen) //make sure the port is open before we send
+        {
+            Communicate.sendRed(REDLEDSTATUS);
+        }
 		//Communicate.sendRedTEST(REDLEDSTATUS);
 	 }
 

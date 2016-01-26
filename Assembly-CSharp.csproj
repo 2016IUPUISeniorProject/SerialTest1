@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{D7E2605F-1E06-FD71-1A83-8C4C852AB13C}</ProjectGuid>
+    <ProjectGuid>{22183570-E009-4D14-F303-0B19F102A403}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -51,7 +51,12 @@
      <Compile Include="Assets\Scripts\CallRed.cs" />
      <Compile Include="Assets\Scripts\CallYellow.cs" />
      <Compile Include="Assets\Scripts\Communicate.cs" />
+     <Compile Include="Assets\Scripts\FirstPersonController.cs" />
      <Compile Include="Assets\Scripts\RotateKnob.cs" />
+     <Compile Include="Assets\Scripts\SoundEffects.cs" />
+     <Compile Include="Assets\Stagit\SkyboxEarthPlanets\script\skyboxspace_demo_v1.cs" />
+     <Compile Include="Assets\Stagit\SkyboxEarthPlanets\script\skyboxspace_mouselook_v1.cs" />
+     <None Include="Assets\Stagit\SkyboxEarthPlanets\readme.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

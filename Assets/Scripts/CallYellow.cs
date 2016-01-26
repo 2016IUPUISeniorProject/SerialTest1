@@ -5,7 +5,7 @@ using System.Collections;
 public class CallYellow : MonoBehaviour {
 
 	public static bool YELLOWLEDSTATUS=false;
-	private Light YELLOWLIGHT;
+    public static Light YELLOWLIGHT;
 	void Start () {
 		YELLOWLIGHT = GetComponent <Light>();
 		YELLOWLIGHT.enabled = false;
@@ -13,7 +13,8 @@ public class CallYellow : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+    {
 
 	}
 
@@ -25,8 +26,12 @@ public class CallYellow : MonoBehaviour {
 			YELLOWLIGHT.enabled = true;
 		} else {gameObject.GetComponent<Renderer> ().material.color = Color.white;
 			YELLOWLIGHT.enabled = false;}
-		Communicate.sendYellow (YELLOWLEDSTATUS);
-		}
+
+        if (Communicate.sp.IsOpen) //make sure the port is open before we send
+        {
+            Communicate.sendYellow(YELLOWLEDSTATUS);
+        }
+	}
 		
 }
 

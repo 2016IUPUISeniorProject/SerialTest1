@@ -23,8 +23,9 @@ public class RotateKnob : MonoBehaviour {
 	/// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// </summary>
 	void Update () {
-		if (KNOBMOUSEDOWN){
-
+        if (KNOBMOUSEDOWN) //if clicked or right mouse button is down
+        {
+            Debug.Log("pressed");
 			euler.z -= Input.GetAxis ("Mouse X") * rotationspeed;
 			//euler.y += Input.GetAxis ("Mouse Y") * rotationspeed;
 			gameObject.transform.rotation = Quaternion.Euler(euler);
