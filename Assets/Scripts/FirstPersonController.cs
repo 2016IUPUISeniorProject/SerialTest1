@@ -26,21 +26,24 @@ using System.Collections;
 
 public class FirstPersonController : MonoBehaviour
 {
-    public CharacterController controller;  //allows us to access the character controller for movement (such as SimpleMove()
+    //allows us to access the character controller for movement (such as SimpleMove()
+    public CharacterController controller;
 
     //used to access the button properties
     GameObject blueButton;
     GameObject greenButton;
     GameObject redButton;
     GameObject yellowButton;
+
     //used to access the panel base
     GameObject panelBase;
-    //used to access our sounds
-    public GameObject sounds;
+
     //knob and ring gameobjects
     public static GameObject ring0,ring1,ring2,ring3,ring4,ring5,ring6,ring7,ring8,ring9,ring10,ring11,ring12,ring13,ring14,ring15;
     public static GameObject[] ringArray = new GameObject[16];
     GameObject knob;
+    //knob and ring variables
+    public int currentRingState = 0;        //number between 0-15 corresponding to the state of the led rings
 
     //keeps track of whether a button has been pressed or not
     bool blueHasBeenPressed = false;
@@ -48,6 +51,7 @@ public class FirstPersonController : MonoBehaviour
     bool yellowHasBeenPressed = false;
     bool redHasBeenPressed = false;
 
+    //movement variables
     public float sensitivity = 1f;          //controls the sensitivity of looking around
     public float speed = 1f;                //controls the speed of movement
 
@@ -58,18 +62,9 @@ public class FirstPersonController : MonoBehaviour
     public float rotationY =  0f;           //stores X and Y rotation information for looking around
     public float rotationX =  0f;
 
-    //knob and ring variables
-    public int currentRingState = 0;        //number between 0-15 corresponding to the state of the led rings
-
-    bool inRangeOfPanel = false;            //used to check whether we are close enough to the panel to interact
     //used to calculate distance from panel
-    float x1;
-    float x2;
-    float y1;
-    float y2; 
-    float z1;
-    float z2;
-    //used to store the distance
+    float x1,x2,y1,y2,z1,z2;
+    //used to store the distance from player to panel
     float distance = 0f;
   
 	void Start () 
@@ -84,7 +79,6 @@ public class FirstPersonController : MonoBehaviour
         blueButton = GameObject.Find("BLUELED");
         greenButton = GameObject.Find("GREENLED");
         yellowButton = GameObject.Find("YELLOWLED");
-        sounds = GameObject.Find("Sounds");
         knob = GameObject.Find("Cylinder");
         panelBase = GameObject.Find("Base");
         //set up the array of rings
@@ -96,7 +90,7 @@ public class FirstPersonController : MonoBehaviour
         y2 = panelBase.transform.position.y;
         z2 = panelBase.transform.position.z;
 
-	}//start
+	}//end start
 	
 	void Update ()
     {
@@ -124,11 +118,28 @@ public class FirstPersonController : MonoBehaviour
     //allows the player to look around using either the right joystick or Occulus headset
     void rotateCamera()
     {
+        //allow looking to be done with either the right joystick or the arrow keys
+        //when occulus is not enabled
+
         //horizontal movement (left and right)
-        rotationX = transform.localEulerAngles.y + Input.GetAxis("RightHorizontal") * sensitivity;
+        if(Input.GetKey(KeyCode.LeftArrow) )
+            rotationX = transform.localEulerAngles.y + -1 * sensitivity;
+        else if(Input.GetKey(KeyCode.RightArrow) )
+            rotationX = transform.localEulerAngles.y + 1 * sensitivity;
+        else 
+            rotationX = transform.localEulerAngles.y + Input.GetAxis("RightHorizontal") * sensitivity;
+
         //vertical movement (up and down)
-        rotationY = rotationY + Input.GetAxis("RightVertical") * sensitivity;
-        //take that value and fit it into an interval [what you are fitting, min , max]
+        if (Input.GetKey(KeyCode.DownArrow))
+            rotationY = rotationY + -1 * sensitivity;
+        else if (Input.GetKey(KeyCode.UpArrow))
+            rotationY = rotationY + 1 * sensitivity;
+        else
+            rotationY = rotationY + Input.GetAxis("RightVertical") * sensitivity;
+
+
+        //take Y rotation value and fit it into an interval [what you are fitting, min , max]
+        //we do not want the player to be able to look down or up farther than 60 degrees
         rotationY = Mathf.Clamp(rotationY, minY, maxY);
 
         //now rotate the camera based on X and Y rotations
@@ -141,11 +152,12 @@ public class FirstPersonController : MonoBehaviour
     void moveForward()
     {
         //FORWARD
-        if (Input.GetAxis("LeftVertical") > 0)
+        if (Input.GetAxis("LeftVertical") > 0 || Input.GetKey(KeyCode.W) )
             controller.SimpleMove(transform.forward * speed);
         //BACKWARD
-        else if (Input.GetAxis("LeftVertical") < 0)
+        else if (Input.GetAxis("LeftVertical") < 0 || Input.GetKey(KeyCode.S))
             controller.SimpleMove(-1 * transform.forward * speed);
+        
     }//end moveForward
 
     //strafing back and forth by checking positive and negactive values of left joystick
@@ -153,11 +165,12 @@ public class FirstPersonController : MonoBehaviour
     {
         //an extra factor of 1.2 was added to compensate for slower strafing and foward movement
         //LEFT
-        if (Input.GetAxis("LeftHorizontal") < 0)
+        if (Input.GetAxis("LeftHorizontal") < 0 || Input.GetKey(KeyCode.A))
             controller.SimpleMove(-1 * transform.right * speed * 1.2f);
-        else if (Input.GetAxis("LeftHorizontal") > 0)
+        else if (Input.GetAxis("LeftHorizontal") > 0 || Input.GetKey(KeyCode.D))
             controller.SimpleMove(transform.right * speed * 1.2f);
-    }
+        
+    }//end strafe
         
     //return true if we are currently walking
     bool isPlayerMoving()
@@ -177,14 +190,13 @@ public class FirstPersonController : MonoBehaviour
     {
         //BLUE
         //light up the blue box if the blue key on the gamepad is pressed ( X )
-
         if (Input.GetKeyDown(KeyCode.Joystick1Button0) && !blueHasBeenPressed)
         {
             blueButton.GetComponent<Renderer>().material.color = Color.blue;
             CallBlue.BLUELIGHT.enabled = true;
             CallBlue.BLUELEDSTATUS = true;
             blueHasBeenPressed = true;
-            sounds.GetComponent<AudioSource>().Play();
+            SoundEffects.buttonClick.Play();
         }
         else
         {
@@ -194,7 +206,7 @@ public class FirstPersonController : MonoBehaviour
                 CallBlue.BLUELIGHT.enabled = false;
                 CallBlue.BLUELEDSTATUS = false;
                 blueHasBeenPressed = false;
-                sounds.GetComponent<AudioSource>().Play();
+                SoundEffects.buttonClick.Play();
             }
         }
 
@@ -206,7 +218,7 @@ public class FirstPersonController : MonoBehaviour
             CallGreen.GREENLIGHT.enabled = true;
             CallGreen.GREENLEDSTATUS = true;
             greenHasBeenPressed = true;
-            sounds.GetComponent<AudioSource>().Play();
+            SoundEffects.buttonClick.Play();
         }
         else
         {
@@ -216,7 +228,7 @@ public class FirstPersonController : MonoBehaviour
                 CallGreen.GREENLIGHT.enabled = false;
                 CallGreen.GREENLEDSTATUS = false;
                 greenHasBeenPressed = false;
-                sounds.GetComponent<AudioSource>().Play();
+                SoundEffects.buttonClick.Play();
             }
         }
 
@@ -228,7 +240,7 @@ public class FirstPersonController : MonoBehaviour
             CallRed.REDLIGHT.enabled = true;
             CallRed.REDLEDSTATUS = true;
             redHasBeenPressed = true;
-            sounds.GetComponent<AudioSource>().Play();
+            SoundEffects.buttonClick.Play();
         }
         else
         {
@@ -238,7 +250,7 @@ public class FirstPersonController : MonoBehaviour
                 CallRed.REDLIGHT.enabled = false;
                 CallRed.REDLEDSTATUS = false;
                 redHasBeenPressed = false;
-                sounds.GetComponent<AudioSource>().Play();
+                SoundEffects.buttonClick.Play();
             }
         }
 
@@ -250,7 +262,7 @@ public class FirstPersonController : MonoBehaviour
             CallYellow.YELLOWLIGHT.enabled = true;
             CallYellow.YELLOWLEDSTATUS = true;
             yellowHasBeenPressed = true;
-            sounds.GetComponent<AudioSource>().Play();
+            SoundEffects.buttonClick.Play();
         }
         else
         {
@@ -260,7 +272,7 @@ public class FirstPersonController : MonoBehaviour
                 CallYellow.YELLOWLIGHT.enabled = false;
                 CallYellow.YELLOWLEDSTATUS = false;
                 yellowHasBeenPressed = false;
-                sounds.GetComponent<AudioSource>().Play();
+                SoundEffects.buttonClick.Play();
             }
         }
     }//end checkButtons
@@ -274,7 +286,7 @@ public class FirstPersonController : MonoBehaviour
         {
             //if we rotate to the left turn the next light on the and previous one off
             //also rotate the knob
-            //turn the current ring off, the next ring on, update the current ring state, and rotate the knob
+            //turn the current ring off, the next ring on, update the current ring state, rotate the knob, and play the sound
             ringArray[currentRingState].GetComponent<Renderer>().material.color = Color.black;
 
             //if we are at the end of the list wrap back around to ring0
@@ -285,6 +297,8 @@ public class FirstPersonController : MonoBehaviour
 
             ringArray[currentRingState].GetComponent<Renderer>().material.color = Color.green;
             knob.transform.Rotate(new Vector3(0, 22.5f, 0), Space.Self); 
+            SoundEffects.knobClick.Play();
+
         }
         //move clockwise instead
         else if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.Joystick1Button5))
@@ -299,7 +313,8 @@ public class FirstPersonController : MonoBehaviour
                 currentRingState += 1;
 
             ringArray[currentRingState].GetComponent<Renderer>().material.color = Color.green;
-            knob.transform.Rotate(new Vector3(0, -1 * 22.5f, 0), Space.Self); 
+            knob.transform.Rotate(new Vector3(0, -1 * 22.5f, 0), Space.Self);
+            SoundEffects.knobClick.Play();
         }
   
 /*
@@ -356,9 +371,15 @@ public class FirstPersonController : MonoBehaviour
         distance = Mathf.Sqrt( Mathf.Pow((x2-x1),2)  + Mathf.Pow((y2-y1),2) + Mathf.Pow((z2-z1),2) );
 
         if (distance < 7.3)
+        {
+            //Debug.Log("in range");
             return true;
+        }
         else
+        {
+            //Debug.Log("not in range");
             return false;
+        }
     }// end inRange()
         
 }//end script
