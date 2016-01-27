@@ -59,4 +59,3 @@ C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\UnityEngi
 C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\Temp\bin\Debug\UnityEngine.Networking.xml
 C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\obj\Debug\Assembly-CSharp.dll
 C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\obj\Debug\Assembly-CSharp.pdb
-C:\Users\Matt\Documents\GitHub\SerialTest1_SeniorDesign\obj\Debug\Assembly-CSharp.csprojResolveAssemblyReference.cache
