@@ -14,7 +14,7 @@ public class Communicate : MonoBehaviour {
 	private static bool YELLOWLEDSTATUS_COM = CallYellow.YELLOWLEDSTATUS;
 	public static string STRINGFROMBOX;
 	public static string STRINGFROMBOX2;
-	public static SerialPort sp = new SerialPort ("COM3", 115200, Parity.None, 8, StopBits.One);
+	public static SerialPort sp = new SerialPort ("COM9", 115200, Parity.None, 8, StopBits.One);
 	private string tString = string.Empty;
 	private byte _terminator = 0xFF;
 	public static GameObject REDLED;
@@ -70,34 +70,47 @@ public class Communicate : MonoBehaviour {
 			if(STRINGFROMBOX=="r0"){Debug.Log("r Status 0 from Box");
 				CallRed.REDLEDSTATUS=false;
 				REDLED.GetComponent<Renderer>().material.color = Color.white;
+                CallRed.REDLIGHT.enabled = false;
+
 			}
 			if(STRINGFROMBOX=="r1"){Debug.Log("r Status 1 from Box");
 				CallRed.REDLEDSTATUS=true;
 				REDLED.GetComponent<Renderer>().material.color = Color.red;
+                CallRed.REDLIGHT.enabled = true;
 			}
-			if(STRINGFROMBOX=="b0"){Debug.Log("b Status 0 from Box");
+			if(STRINGFROMBOX=="b0"){Debug.Log("b Status 0 from Box");           /// copy this one
 				CallBlue.BLUELEDSTATUS=false;
 				BLUELED.GetComponent<Renderer>().material.color = Color.white;
+                CallBlue.BLUELIGHT.enabled = false;
 			}
 			if(STRINGFROMBOX=="b1"){Debug.Log("b Status 1 from Box");
 				CallBlue.BLUELEDSTATUS=true;
 				BLUELED.GetComponent<Renderer>().material.color = Color.blue;
+                CallBlue.BLUELIGHT.enabled = true;
 			}
 			if(STRINGFROMBOX=="g0"){Debug.Log("g Status 0 from Box");
 				CallGreen.GREENLEDSTATUS=false;
 				GREENLED.GetComponent<Renderer>().material.color = Color.white;
+                CallGreen.GREENLIGHT.enabled = false;
+
 			}
 			if(STRINGFROMBOX=="g1"){Debug.Log("g Status 1 from Box");
 				CallGreen.GREENLEDSTATUS=true;
 				GREENLED.GetComponent<Renderer>().material.color = Color.green;
+                CallGreen.GREENLIGHT.enabled = true;
+
 			}
 			if(STRINGFROMBOX=="y0"){Debug.Log("y Status 0 from Box");
 				CallYellow.YELLOWLEDSTATUS=false;
 				YELLOWLED.GetComponent<Renderer>().material.color = Color.white;
+                CallYellow.YELLOWLIGHT.enabled = false;
+
 			}
 			if(STRINGFROMBOX=="y1"){Debug.Log("y Status 1 from Box");
 				CallYellow.YELLOWLEDSTATUS=true;
 				YELLOWLED.GetComponent<Renderer>().material.color = Color.yellow;
+                CallYellow.YELLOWLIGHT.enabled = true;
+
 			}
 			if(STRINGFROMBOX[0]=='e'){      //check first character from the string, then move forward
 															//string.remove(index,count)

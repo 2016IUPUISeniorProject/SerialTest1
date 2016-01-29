@@ -77,7 +77,7 @@ void Update () {
 		RINGARRAY[CURRENTRINGLED].GetComponent<Renderer>().material.color = Color.green;
 		for (int j = 0; j <= 15; j++) {							//SET ALL ELSE TO 0??
 		if (j != CURRENTRINGLED) {
-				RINGARRAY [j].GetComponent<Renderer> ().material.color = Color.white;
+				RINGARRAY [j].GetComponent<Renderer> ().material.color = Color.black;
 			}
 		}
 		ENCODERLEDSTATUS=CURRENTRINGLED; //IF GETTING A VALUE FROM THE REAL BOX, MATCH THE UNITY VALUE WITH THE PASSED VALUE

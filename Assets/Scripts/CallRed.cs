@@ -16,11 +16,7 @@ public class CallRed : MonoBehaviour {
 		gameObject.GetComponent<Renderer> ().material.color = Color.white;
 	}
 	
-	// Update is called once per frame
-	void Update () 
-    {
-        
-	}
+
 
 	void OnMouseDown() {
 		REDLEDSTATUS=!REDLEDSTATUS;

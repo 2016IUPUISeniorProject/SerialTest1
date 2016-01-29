@@ -101,8 +101,6 @@ public class FirstPersonController : MonoBehaviour
         //move left and right directions
         strafe();
         //are we in range of the panel to interact?
-        inRange();
-
         //only allow interaction with the panel if we are in range
         if (inRange())
         {
@@ -190,97 +188,143 @@ public class FirstPersonController : MonoBehaviour
     {
         //BLUE
         //light up the blue box if the blue key on the gamepad is pressed ( X )
-        if (Input.GetKeyDown(KeyCode.Joystick1Button0) && !blueHasBeenPressed)
+        /*if (Input.GetKeyDown(KeyCode.Joystick1Button0) && !blueHasBeenPressed && !CallBlue.BLUELEDSTATUS)
         {
             blueButton.GetComponent<Renderer>().material.color = Color.blue;
             CallBlue.BLUELIGHT.enabled = true;
-            CallBlue.BLUELEDSTATUS = true;
+            //CallBlue.BLUELEDSTATUS = true;
+            if (Communicate.sp.IsOpen) //make sure the port is open before we send
+            {
+                Communicate.sendBlue(CallBlue.BLUELEDSTATUS);
+            }
+
             blueHasBeenPressed = true;
             SoundEffects.buttonClick.Play();
         }
         else
         {
-            if (Input.GetKeyDown(KeyCode.Joystick1Button0) && blueHasBeenPressed)
+            if (Input.GetKeyDown(KeyCode.Joystick1Button0) && blueHasBeenPressed && CallBlue.BLUELEDSTATUS)
             {
                 blueButton.GetComponent<Renderer>().material.color = Color.white;
                 CallBlue.BLUELIGHT.enabled = false;
-                CallBlue.BLUELEDSTATUS = false;
+               // CallBlue.BLUELEDSTATUS = false;
+                if (Communicate.sp.IsOpen) //make sure the port is open before we send
+                {
+                    Communicate.sendBlue(CallBlue.BLUELEDSTATUS);
+                }
+
                 blueHasBeenPressed = false;
                 SoundEffects.buttonClick.Play();
             }
-        }
+        }*/
 
-        //GREEN
-        //light up the green box if the green key on the gamepad is pressed ( A )
-        if (Input.GetKeyDown(KeyCode.Joystick1Button1) && !greenHasBeenPressed)
+        //print("Clicked");
+
+
+        if (Input.GetKeyDown(KeyCode.Joystick1Button2))                                                // blue button down
         {
-            greenButton.GetComponent<Renderer>().material.color = Color.green;
-            CallGreen.GREENLIGHT.enabled = true;
-            CallGreen.GREENLEDSTATUS = true;
-            greenHasBeenPressed = true;
-            SoundEffects.buttonClick.Play();
-        }
-        else
-        {
-            if (Input.GetKeyDown(KeyCode.Joystick1Button1) && greenHasBeenPressed)
+            CallRed.REDLEDSTATUS = !CallRed.REDLEDSTATUS;
+            if (CallRed.REDLEDSTATUS)
             {
-                greenButton.GetComponent<Renderer>().material.color = Color.white;
-                CallGreen.GREENLIGHT.enabled = false;
-                CallGreen.GREENLEDSTATUS = false;
-                greenHasBeenPressed = false;
-                SoundEffects.buttonClick.Play();
+                redButton.GetComponent<Renderer>().material.color = Color.red;
+                CallRed.REDLIGHT.enabled = true;
             }
-        }
-
-        //RED
-        //light up the blue box if the red key on the gamepad is pressed ( B )
-        if (Input.GetKeyDown(KeyCode.Joystick1Button2)  && !redHasBeenPressed)
-        {
-            redButton.GetComponent<Renderer>().material.color = Color.red;
-            CallRed.REDLIGHT.enabled = true;
-            CallRed.REDLEDSTATUS = true;
-            redHasBeenPressed = true;
-            SoundEffects.buttonClick.Play();
-        }
-        else
-        {
-            if (Input.GetKeyDown(KeyCode.Joystick1Button2) && redHasBeenPressed)
+            else
             {
                 redButton.GetComponent<Renderer>().material.color = Color.white;
                 CallRed.REDLIGHT.enabled = false;
-                CallRed.REDLEDSTATUS = false;
-                redHasBeenPressed = false;
-                SoundEffects.buttonClick.Play();
             }
+            if (Communicate.sp.IsOpen) //make sure the port is open before we send
+            {
+                Communicate.sendRed(CallRed.REDLEDSTATUS);
+            }
+            //Communicate.sendBlueTEST(BLUELEDSTATUS);
         }
 
-        //YELLOW
-        //light up the blue box if the yellow key on the gamepad is pressed ( Y )
-        if (Input.GetKeyDown(KeyCode.Joystick1Button3) && !yellowHasBeenPressed)
+
+
+
+
+
+        if (Input.GetKeyDown(KeyCode.Joystick1Button0))                                                // blue button down
         {
-            yellowButton.GetComponent<Renderer>().material.color = Color.yellow;
-            CallYellow.YELLOWLIGHT.enabled = true;
-            CallYellow.YELLOWLEDSTATUS = true;
-            yellowHasBeenPressed = true;
-            SoundEffects.buttonClick.Play();
+            CallBlue.BLUELEDSTATUS = !CallBlue.BLUELEDSTATUS;
+            if (CallBlue.BLUELEDSTATUS)
+            {
+                blueButton.GetComponent<Renderer>().material.color = Color.blue;
+                CallBlue.BLUELIGHT.enabled = true;
+            }
+            else
+            {
+                blueButton.GetComponent<Renderer>().material.color = Color.white;
+                CallBlue.BLUELIGHT.enabled = false;
+            }
+            if (Communicate.sp.IsOpen) //make sure the port is open before we send
+            {
+                Communicate.sendBlue(CallBlue.BLUELEDSTATUS);
+            }
+            //Communicate.sendBlueTEST(BLUELEDSTATUS);
         }
-        else
+
+
+
+        if (Input.GetKeyDown(KeyCode.Joystick1Button1))                                                // green button down
         {
-            if(Input.GetKeyDown(KeyCode.Joystick1Button3) && yellowHasBeenPressed)
+            CallGreen.GREENLEDSTATUS = !CallGreen.GREENLEDSTATUS;
+            if (CallGreen.GREENLEDSTATUS)
+            {
+                greenButton.GetComponent<Renderer>().material.color = Color.green;
+                CallGreen.GREENLIGHT.enabled = true;
+            }
+            else
+            {
+                greenButton.GetComponent<Renderer>().material.color = Color.white;
+                CallGreen.GREENLIGHT.enabled = false;
+            }
+            if (Communicate.sp.IsOpen) //make sure the port is open before we send
+            {
+                Communicate.sendGreen(CallGreen.GREENLEDSTATUS);
+            }
+            //Communicate.sendBlueTEST(BLUELEDSTATUS);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Joystick1Button3))                                                // yellow button down
+        {
+            CallYellow.YELLOWLEDSTATUS = !CallYellow.YELLOWLEDSTATUS;
+            if (CallYellow.YELLOWLEDSTATUS)
+            {
+                yellowButton.GetComponent<Renderer>().material.color = Color.yellow;
+                CallYellow.YELLOWLIGHT.enabled = true;
+            }
+            else
             {
                 yellowButton.GetComponent<Renderer>().material.color = Color.white;
                 CallYellow.YELLOWLIGHT.enabled = false;
-                CallYellow.YELLOWLEDSTATUS = false;
-                yellowHasBeenPressed = false;
-                SoundEffects.buttonClick.Play();
             }
+            if (Communicate.sp.IsOpen) //make sure the port is open before we send
+            {
+                Communicate.sendYellow(CallYellow.YELLOWLEDSTATUS);
+            }
+            //Communicate.sendBlueTEST(BLUELEDSTATUS);
         }
-    }//end checkButtons
+    
+
+
+
+    }
+
+
+
+
+
+
 
     //code that will light up and turn off the ring of LED's
     //-----> STILL NEED TO ADD CODE TO SEND OVER SERIAL PORT
     void checkRings()
     {
+        currentRingState = CallKnob.ENCODERLEDSTATUS;
+
         //move around the rings counterclockwise using L key or left bumper
         if (Input.GetKeyDown(KeyCode.L) || Input.GetKeyDown(KeyCode.Joystick1Button4))
         {
@@ -299,6 +343,17 @@ public class FirstPersonController : MonoBehaviour
             knob.transform.Rotate(new Vector3(0, 22.5f, 0), Space.Self); 
             SoundEffects.knobClick.Play();
 
+            //*added
+
+            CallKnob.ENCODERLEDSTATUS = currentRingState;
+            if (Communicate.sp.IsOpen) //make sure the port is open before we send
+            {
+                Communicate.sendKnob(CallKnob.ENCODERLEDSTATUS);
+            }
+
+
+            //*added
+
         }
         //move clockwise instead
         else if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.Joystick1Button5))
@@ -315,6 +370,17 @@ public class FirstPersonController : MonoBehaviour
             ringArray[currentRingState].GetComponent<Renderer>().material.color = Color.green;
             knob.transform.Rotate(new Vector3(0, -1 * 22.5f, 0), Space.Self);
             SoundEffects.knobClick.Play();
+
+
+            CallKnob.ENCODERLEDSTATUS = currentRingState;
+            if (Communicate.sp.IsOpen) //make sure the port is open before we send
+            {
+                Communicate.sendKnob(CallKnob.ENCODERLEDSTATUS);
+            }
+
+
+
+
         }
   
 /*
