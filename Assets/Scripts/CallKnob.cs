@@ -18,6 +18,8 @@ public class CallKnob : MonoBehaviour {
 	public static float ANGLETHRESHOLD=25.0F;
 	public static int ENCODERLEDSTATUS=0;
 
+    //GameObject knob;
+
 	// Use this for initialization
 void Start () {
 		 //NAME ALL THE CHILDREN (LEDS IN RING) SO THEY CAN BE REFERENCED (I USED TAGS IN UNITY)
@@ -38,11 +40,15 @@ void Update () {
 		NEWZVECTOR = gameObject.transform.up;
 
 
-		if (Mathf.Abs (angle - PREVIOUSANGLE) > ANGLETHRESHOLD) {
-			if (Mathf.Sign(Vector3.Cross(PREVIOUSZVECTOR, NEWZVECTOR).z ) > 0) {
+		if (Mathf.Abs (angle - PREVIOUSANGLE) > ANGLETHRESHOLD)
+        {
+			if (Mathf.Sign(Vector3.Cross(PREVIOUSZVECTOR, NEWZVECTOR).z ) > 0) 
+            {
 				//GOING CW, RINGLED++
 				INCREMENT_RINGLED();
-			} else {
+			} 
+            else
+            {
 				DECREMENT_RINGLED();
 			}
 		
@@ -73,15 +79,28 @@ void Update () {
 		Ring15= GameObject.FindGameObjectWithTag("Ring15");
 	}
 
-	public static void LIGHTRINGLED(int CURRENTRINGLED){
-		RINGARRAY[CURRENTRINGLED].GetComponent<Renderer>().material.color = Color.green;
-		for (int j = 0; j <= 15; j++) {							//SET ALL ELSE TO 0??
-		if (j != CURRENTRINGLED) {
-				RINGARRAY [j].GetComponent<Renderer> ().material.color = Color.black;
-			}
-		}
-		ENCODERLEDSTATUS=CURRENTRINGLED; //IF GETTING A VALUE FROM THE REAL BOX, MATCH THE UNITY VALUE WITH THE PASSED VALUE
-	}
+	public static void LIGHTRINGLED(int CURRENTRINGLED)
+    {
+        if(!FirstPersonController.secretModeActive)
+        {
+            //light the LED up and play the click sound
+    		RINGARRAY[CURRENTRINGLED].GetComponent<Renderer>().material.color = Color.green;
+            //SoundEffects.knobClick.Play();
+
+    		for (int j = 0; j <= 15; j++) 
+            {						
+                if(j != CURRENTRINGLED )
+                {
+                    RINGARRAY[j].GetComponent<Renderer>().material.color = Color.black;
+                   
+                }
+        			
+    		}
+
+    		ENCODERLEDSTATUS=CURRENTRINGLED; //IF GETTING A VALUE FROM THE REAL BOX, MATCH THE UNITY VALUE WITH THE PASSED VALUE
+        }
+
+	}//end light ring led
 
 	void INCREMENT_RINGLED() {
 		if(ENCODERLEDSTATUS==15)

@@ -41,15 +41,10 @@ public class FirstPersonController : MonoBehaviour
     //knob and ring gameobjects
     public static GameObject ring0,ring1,ring2,ring3,ring4,ring5,ring6,ring7,ring8,ring9,ring10,ring11,ring12,ring13,ring14,ring15;
     public static GameObject[] ringArray = new GameObject[16];
-    GameObject knob;
+    public static GameObject knob;
     //knob and ring variables
     public int currentRingState = 0;        //number between 0-15 corresponding to the state of the led rings
-
-    //keeps track of whether a button has been pressed or not
-    bool blueHasBeenPressed = false;
-    bool greenHasBeenPressed = false;
-    bool yellowHasBeenPressed = false;
-    bool redHasBeenPressed = false;
+    private static int previousRingState = 0;   //GLOBAL ONLY TO THIS CLASS!
 
     //movement variables
     public float sensitivity = 1f;          //controls the sensitivity of looking around
@@ -66,7 +61,16 @@ public class FirstPersonController : MonoBehaviour
     float x1,x2,y1,y2,z1,z2;
     //used to store the distance from player to panel
     float distance = 0f;
-  
+
+    //class wide counter
+    uint counter = 0;
+    public static bool secretModeActive = false;
+    bool tempBlueStatus;
+    bool tempRedStatus;
+    bool tempGreenStatus;
+    bool tempYellowStatus;
+    int tempEncoderStatus;
+
 	void Start () 
     {
         //CAN I FORCE THE CURSOR TO SHOW UP WHILE IN THE SCENE WITH THE OCCULUS HEADSET ?
@@ -90,6 +94,10 @@ public class FirstPersonController : MonoBehaviour
         y2 = panelBase.transform.position.y;
         z2 = panelBase.transform.position.z;
 
+        //start at the same state as the panel
+        sendAll();
+
+
 	}//end start
 	
 	void Update ()
@@ -102,7 +110,7 @@ public class FirstPersonController : MonoBehaviour
         strafe();
         //are we in range of the panel to interact?
         //only allow interaction with the panel if we are in range
-        if (inRange())
+        if (inRange() && !secretModeActive )
         {
             //check to see if we need to light any buttons up
             checkButtons();
@@ -186,53 +194,23 @@ public class FirstPersonController : MonoBehaviour
     /*WILL WANT TO CHECK THIS PORTION OF THE CODE WITH THE ACTUAL PANEL CONNECTED*/
     void checkButtons()
     {
-        //BLUE
+        //RED
         //light up the blue box if the blue key on the gamepad is pressed ( X )
-        /*if (Input.GetKeyDown(KeyCode.Joystick1Button0) && !blueHasBeenPressed && !CallBlue.BLUELEDSTATUS)
-        {
-            blueButton.GetComponent<Renderer>().material.color = Color.blue;
-            CallBlue.BLUELIGHT.enabled = true;
-            //CallBlue.BLUELEDSTATUS = true;
-            if (Communicate.sp.IsOpen) //make sure the port is open before we send
-            {
-                Communicate.sendBlue(CallBlue.BLUELEDSTATUS);
-            }
-
-            blueHasBeenPressed = true;
-            SoundEffects.buttonClick.Play();
-        }
-        else
-        {
-            if (Input.GetKeyDown(KeyCode.Joystick1Button0) && blueHasBeenPressed && CallBlue.BLUELEDSTATUS)
-            {
-                blueButton.GetComponent<Renderer>().material.color = Color.white;
-                CallBlue.BLUELIGHT.enabled = false;
-               // CallBlue.BLUELEDSTATUS = false;
-                if (Communicate.sp.IsOpen) //make sure the port is open before we send
-                {
-                    Communicate.sendBlue(CallBlue.BLUELEDSTATUS);
-                }
-
-                blueHasBeenPressed = false;
-                SoundEffects.buttonClick.Play();
-            }
-        }*/
-
-        //print("Clicked");
-
-
-        if (Input.GetKeyDown(KeyCode.Joystick1Button2))                                                // blue button down
+        if (Input.GetKeyDown(KeyCode.Joystick1Button2))                                                // red button down
         {
             CallRed.REDLEDSTATUS = !CallRed.REDLEDSTATUS;
+
             if (CallRed.REDLEDSTATUS)
             {
                 redButton.GetComponent<Renderer>().material.color = Color.red;
                 CallRed.REDLIGHT.enabled = true;
+                SoundEffects.buttonClick.Play();
             }
             else
             {
                 redButton.GetComponent<Renderer>().material.color = Color.white;
                 CallRed.REDLIGHT.enabled = false;
+                SoundEffects.buttonClick.Play();
             }
             if (Communicate.sp.IsOpen) //make sure the port is open before we send
             {
@@ -240,24 +218,27 @@ public class FirstPersonController : MonoBehaviour
             }
             //Communicate.sendBlueTEST(BLUELEDSTATUS);
         }
-
-
-
-
-
-
+            
+        //BLUE
         if (Input.GetKeyDown(KeyCode.Joystick1Button0))                                                // blue button down
         {
             CallBlue.BLUELEDSTATUS = !CallBlue.BLUELEDSTATUS;
+
             if (CallBlue.BLUELEDSTATUS)
             {
                 blueButton.GetComponent<Renderer>().material.color = Color.blue;
                 CallBlue.BLUELIGHT.enabled = true;
+                SoundEffects.buttonClick.Play();
+                //start a counter to see how long we have pressed the blue button down for
+                InvokeRepeating("checkMode", 0, 1);
             }
             else
             {
                 blueButton.GetComponent<Renderer>().material.color = Color.white;
                 CallBlue.BLUELIGHT.enabled = false;
+                SoundEffects.buttonClick.Play();
+                CancelInvoke();
+                counter = 0;
             }
             if (Communicate.sp.IsOpen) //make sure the port is open before we send
             {
@@ -265,21 +246,23 @@ public class FirstPersonController : MonoBehaviour
             }
             //Communicate.sendBlueTEST(BLUELEDSTATUS);
         }
-
-
-
+            
+        //GREEN
         if (Input.GetKeyDown(KeyCode.Joystick1Button1))                                                // green button down
         {
             CallGreen.GREENLEDSTATUS = !CallGreen.GREENLEDSTATUS;
+
             if (CallGreen.GREENLEDSTATUS)
             {
                 greenButton.GetComponent<Renderer>().material.color = Color.green;
                 CallGreen.GREENLIGHT.enabled = true;
+                SoundEffects.buttonClick.Play();
             }
             else
             {
                 greenButton.GetComponent<Renderer>().material.color = Color.white;
                 CallGreen.GREENLIGHT.enabled = false;
+                SoundEffects.buttonClick.Play();
             }
             if (Communicate.sp.IsOpen) //make sure the port is open before we send
             {
@@ -288,42 +271,37 @@ public class FirstPersonController : MonoBehaviour
             //Communicate.sendBlueTEST(BLUELEDSTATUS);
         }
 
+        //YELLOW
         if (Input.GetKeyDown(KeyCode.Joystick1Button3))                                                // yellow button down
         {
             CallYellow.YELLOWLEDSTATUS = !CallYellow.YELLOWLEDSTATUS;
+
             if (CallYellow.YELLOWLEDSTATUS)
             {
                 yellowButton.GetComponent<Renderer>().material.color = Color.yellow;
                 CallYellow.YELLOWLIGHT.enabled = true;
+                SoundEffects.buttonClick.Play();
             }
             else
             {
                 yellowButton.GetComponent<Renderer>().material.color = Color.white;
                 CallYellow.YELLOWLIGHT.enabled = false;
+                SoundEffects.buttonClick.Play();
             }
             if (Communicate.sp.IsOpen) //make sure the port is open before we send
             {
                 Communicate.sendYellow(CallYellow.YELLOWLEDSTATUS);
             }
-            //Communicate.sendBlueTEST(BLUELEDSTATUS);
         }
-    
-
-
-
-    }
-
-
-
-
-
-
+    }//end checkButtons
 
     //code that will light up and turn off the ring of LED's
-    //-----> STILL NEED TO ADD CODE TO SEND OVER SERIAL PORT
     void checkRings()
     {
+        //update date ring state based off of global variable encoderledstatus
+        //both Unity and the panel use this varible to determine their states
         currentRingState = CallKnob.ENCODERLEDSTATUS;
+
 
         //move around the rings counterclockwise using L key or left bumper
         if (Input.GetKeyDown(KeyCode.L) || Input.GetKeyDown(KeyCode.Joystick1Button4))
@@ -340,20 +318,13 @@ public class FirstPersonController : MonoBehaviour
                 currentRingState -= 1;
 
             ringArray[currentRingState].GetComponent<Renderer>().material.color = Color.green;
-            knob.transform.Rotate(new Vector3(0, 22.5f, 0), Space.Self); 
-            SoundEffects.knobClick.Play();
-
-            //*added
+            //SoundEffects.knobClick.Play();
 
             CallKnob.ENCODERLEDSTATUS = currentRingState;
             if (Communicate.sp.IsOpen) //make sure the port is open before we send
             {
                 Communicate.sendKnob(CallKnob.ENCODERLEDSTATUS);
             }
-
-
-            //*added
-
         }
         //move clockwise instead
         else if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.Joystick1Button5))
@@ -368,32 +339,36 @@ public class FirstPersonController : MonoBehaviour
                 currentRingState += 1;
 
             ringArray[currentRingState].GetComponent<Renderer>().material.color = Color.green;
-            knob.transform.Rotate(new Vector3(0, -1 * 22.5f, 0), Space.Self);
-            SoundEffects.knobClick.Play();
 
+            //SoundEffects.knobClick.Play();
 
             CallKnob.ENCODERLEDSTATUS = currentRingState;
             if (Communicate.sp.IsOpen) //make sure the port is open before we send
             {
                 Communicate.sendKnob(CallKnob.ENCODERLEDSTATUS);
             }
-
-
-
-
         }
-  
-/*
- * //EVENTUALLY I WILL WANT TO SEND THIS DATA OVER THE SERIAL PORT, I BELIEVE IT SHOULD BE THE INDEX OF THE LED
-        THAT SHOULD BE LIT
-        ALSO I SHOULD SET GLOBAL FLAG TO LET ALL OTHER SCRIPTS KNOW IF THE COM PORT IS OPEN OR NOT INSTEAD OF CHECKING EVERY FRAME
-        if (Communicate.sp.IsOpen) //make sure the port is open before we send
+
+        //this section was added due to the panel's inability to know which way to turn the knob
+        //now check the previous state against the current state so we can rotate accordingly
+
+        //clockwise rotation
+        if ( (currentRingState -previousRingState) == 1 || (currentRingState -previousRingState) == -15 )
         {
-            Communicate.sendKnob(currentRingState);
+            knob.transform.Rotate(new Vector3(0, -1 * 22.5f, 0), Space.Self);
+            SoundEffects.knobClick.Play();
         }
-
-*/
-
+        //counterclockwise rotation
+        else if( (currentRingState -previousRingState) == -1 || (currentRingState -previousRingState) == 15)
+        {
+            knob.transform.Rotate(new Vector3(0, 22.5f, 0), Space.Self);
+            SoundEffects.knobClick.Play();
+            //also make green and black from here
+        }
+        //by default nothing should happen if they are equal because the state
+        //of the leds has not changed
+   
+        previousRingState = currentRingState; //save the state before we leave
 
     }//end checkRings
 
@@ -447,5 +422,128 @@ public class FirstPersonController : MonoBehaviour
             return false;
         }
     }// end inRange()
+
+
+    //secret mode that can be entered by holding the blue button down for a specified amount of time
+    void checkMode()
+    {
+        if (Input.GetKey(KeyCode.JoystickButton0) )
+        {
+            counter++;
+            Debug.Log("counter is " + counter);
+        }
+        else
+        {
+            counter = 0;
+        }
+
+        if (counter == 5)
+        {
+            Debug.Log("secret mode entered!!");
+            CancelInvoke();
+            InvokeRepeating("secretMode1", 0, 0.25f);
+            counter = 0;
+            secretModeActive = true;
+            //save current status
+            tempBlueStatus = CallBlue.BLUELEDSTATUS;
+            tempRedStatus = CallRed.REDLEDSTATUS;
+            tempGreenStatus = CallGreen.GREENLEDSTATUS;
+            tempYellowStatus = CallYellow.YELLOWLEDSTATUS;
+            tempEncoderStatus = CallKnob.ENCODERLEDSTATUS;
+            //SoundEffects.knobClick.mute = true;
+        }
+            
+    }//end check secret mode
+
+    void secretMode1()
+    {
+        
+        if (counter % 4 == 0)
+        {
+            CallRed.REDLEDSTATUS = true;
+            CallBlue.BLUELEDSTATUS = false;
+            CallGreen.GREENLEDSTATUS = false;
+            CallYellow.YELLOWLEDSTATUS = false;
+
+            if (CallKnob.ENCODERLEDSTATUS != 15)
+                CallKnob.ENCODERLEDSTATUS += 1;
+            else
+                CallKnob.ENCODERLEDSTATUS = 0;
+            
+            sendAll();
+        }
+        else if (counter % 4 == 1)
+        {
+            CallRed.REDLEDSTATUS = false;
+            CallBlue.BLUELEDSTATUS = true;
+            CallGreen.GREENLEDSTATUS = false;
+            CallYellow.YELLOWLEDSTATUS = false;
+
+            if (CallKnob.ENCODERLEDSTATUS != 15)
+                CallKnob.ENCODERLEDSTATUS += 1;
+            else
+                CallKnob.ENCODERLEDSTATUS = 0;
+            
+            sendAll();
+        }
+        else if (counter % 4 == 2)
+        {
+            CallRed.REDLEDSTATUS = false;
+            CallBlue.BLUELEDSTATUS = false;
+            CallGreen.GREENLEDSTATUS = true;
+            CallYellow.YELLOWLEDSTATUS = false;
+
+            if (CallKnob.ENCODERLEDSTATUS != 15)
+                CallKnob.ENCODERLEDSTATUS += 1;
+            else
+                CallKnob.ENCODERLEDSTATUS = 0;
+
+            sendAll();
+        }
+        else if (counter % 4 == 3)
+        {
+            CallRed.REDLEDSTATUS = false;
+            CallBlue.BLUELEDSTATUS = false;
+            CallGreen.GREENLEDSTATUS = false;
+            CallYellow.YELLOWLEDSTATUS = true;
+
+            if (CallKnob.ENCODERLEDSTATUS != 15)
+                CallKnob.ENCODERLEDSTATUS += 1;
+            else
+                CallKnob.ENCODERLEDSTATUS = 0;
+
+            sendAll();
+        }
+
+        counter++;
+
+        if (counter == 20)
+        {
+            counter = 0;
+            CancelInvoke();
+            CallRed.REDLEDSTATUS = tempRedStatus;
+            CallBlue.BLUELEDSTATUS = tempBlueStatus;
+            CallGreen.GREENLEDSTATUS = tempGreenStatus;
+            CallYellow.YELLOWLEDSTATUS = tempYellowStatus;
+            CallKnob.ENCODERLEDSTATUS = tempEncoderStatus;
+            sendAll();
+            //SoundEffects.knobClick.mute = false;
+            secretModeActive = false;
+        }
+
+    }//end secretMode1
+
+    //used to set all data about lights to comm port
+    void sendAll()
+    {
+        if (Communicate.sp.IsOpen) //make sure the port is open before we send
+        {
+            Communicate.sendRed(CallRed.REDLEDSTATUS);
+            Communicate.sendBlue(CallBlue.BLUELEDSTATUS);
+            Communicate.sendGreen(CallGreen.GREENLEDSTATUS);
+            Communicate.sendYellow(CallYellow.YELLOWLEDSTATUS);
+            Communicate.sendKnob(CallKnob.ENCODERLEDSTATUS);
+        }
+    }
         
 }//end script
