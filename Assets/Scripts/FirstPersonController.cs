@@ -9,6 +9,7 @@ using System.Collections;
 //Script that will be used to move around in the VR environment. A 3-D "capsule" object was created and the main camera was made the child.
 //A character controller was also added to the capsule. This script will define all of the movement from the gamepad.
 
+
 /*JOYSTICK BUTTONS
  * Input.GetKeyDown( KeyCode.Joystick1Button0 )
  * X = 0
